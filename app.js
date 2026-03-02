@@ -861,6 +861,7 @@ function landmarkDistance(a, b) {
 }
 
 function computeCurlsFromLandmarks(landmarks) {
+  // Thumb is noisier than other fingers; blend joint-angle curl with tip-to-index-base distance.
   const thumbAngle = jointAngleDeg(landmarks[1], landmarks[2], landmarks[4]);
   const thumbCurlAngle = mapAngleToCurl(thumbAngle, 155, 70);
 
@@ -873,6 +874,7 @@ function computeCurlsFromLandmarks(landmarks) {
   for (let i = 1; i < FINGER_TRIPLETS.length; i += 1) {
     const [mcp, pip, tip] = FINGER_TRIPLETS[i];
     const angle = jointAngleDeg(landmarks[mcp], landmarks[pip], landmarks[tip]);
+    // Empirical heuristic: ~170 deg is near fully extended, ~65 deg near fully curled.
     const curl = mapAngleToCurl(angle, 170, 65);
     curls.push(curl);
   }

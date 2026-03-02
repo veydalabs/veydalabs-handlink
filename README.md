@@ -30,6 +30,7 @@ If your build differs (mechanics, horn orientation, tendon path, wiring, servo m
 - External servo power supply for MG996R servos
 - Common ground between Arduino GND and servo power GND
 - Internet access when loading the web app (MediaPipe scripts load from CDN)
+- Optional: Node.js (for `npm run dev` / `npm run lint`)
 
 ## 1) Upload Firmware (Arduino IDE)
 
@@ -65,6 +66,19 @@ py -m http.server 8080
 ```
 
 Open: `http://localhost:8080`
+
+## Optional: Run with npm scripts
+
+```bash
+cd veydalabs-handlink
+npm run dev
+```
+
+Optional lint:
+
+```bash
+npm run lint
+```
 
 ## 3) Setup Flow
 
