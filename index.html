@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VeydaLabs HandLink</title>
+  <link rel="icon" type="image/png" href="./assets/favicon.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <img class="brand-mark" src="./assets/favicon.png" alt="Veyda Labs logo">
+        <div class="brand-text">
+          <h1>veydalabs-handlink</h1>
+          <p>human hand mirroring interface</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="workspace" aria-label="Application workspace">
+      <nav class="tab-nav" role="tablist" aria-label="HandLink tabs">
+        <button
+          id="tab-setup"
+          class="tab is-active"
+          role="tab"
+          aria-controls="panel-setup"
+          aria-selected="true"
+          data-target="setup"
+          type="button"
+        >
+          Setup
+        </button>
+        <button
+          id="tab-control"
+          class="tab"
+          role="tab"
+          aria-controls="panel-control"
+          aria-selected="false"
+          data-target="control"
+          type="button"
+        >
+          Control
+        </button>
+      </nav>
+
+      <section
+        id="panel-setup"
+        class="panel is-active"
+        role="tabpanel"
+        aria-labelledby="tab-setup"
+      >
+        <div class="setup-layout">
+          <article class="setup-card">
+            <header class="card-header">
+              <h2>Device Setup</h2>
+              <p>Connect your laptop to an Arduino over USB serial.</p>
+            </header>
+
+            <div class="field-grid">
+              <label class="field">
+                <span class="field-label">Connect Device</span>
+                <select id="board-select" aria-label="Device type">
+                  <option value="arduino_uno">Arduino Uno</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Detected Port</span>
+                <select id="port-select" aria-label="Detected serial port">
+                  <option value="">No authorized ports yet</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="button-row">
+              <button id="detect-btn" class="action-btn ghost" type="button">Look For Arduino</button>
+              <button id="connect-btn" class="action-btn accent" type="button">Connect Device</button>
+              <button id="disconnect-btn" class="action-btn danger" type="button" disabled>Disconnect</button>
+            </div>
+
+            <section class="manual-calibration-section" aria-label="Manual calibration">
+              <header class="manual-calibration-header">
+                <h3>Manual Calibration</h3>
+                <p>Move each servo in 5 degree steps and store fully extended / fully closed values.</p>
+              </header>
+
+              <div id="servo-calibration-list" class="servo-calibration-list"></div>
+
+              <div class="manual-calibration-actions">
+                <button id="save-calibration-btn" class="action-btn accent" type="button">Save Calibration</button>
+                <p id="calibration-save-status" class="calibration-save-status">No saved calibration yet.</p>
+              </div>
+            </section>
+          </article>
+
+          <aside class="status-card" aria-live="polite">
+            <h3>Serial Status</h3>
+            <p id="status-text" class="status-text">Idle</p>
+            <dl class="status-list">
+              <div class="status-row">
+                <dt>Web Serial</dt>
+                <dd id="support-text">Checking...</dd>
+              </div>
+              <div class="status-row">
+                <dt>Connection</dt>
+                <dd id="connection-text">Disconnected</dd>
+              </div>
+              <div class="status-row">
+                <dt>Device</dt>
+                <dd id="device-text">None</dd>
+              </div>
+            </dl>
+          </aside>
+        </div>
+      </section>
+
+      <section
+        id="panel-control"
+        class="panel"
+        role="tabpanel"
+        aria-labelledby="tab-control"
+        hidden
+      >
+        <div class="control-layout">
+          <article id="control-gate" class="control-gate">
+            <header class="control-gate-header">
+              <h2>Safety Confirmation</h2>
+              <p>Ensure calibration angles are set properly to avoid damage before enabling live hand control.</p>
+            </header>
+            <button id="control-confirm-btn" class="action-btn accent" type="button">Confirm And Enter Control</button>
+            <p id="control-gate-status" class="control-gate-status">Connect device and save calibration to continue.</p>
+          </article>
+
+          <article id="control-workspace" class="control-workspace" hidden>
+            <header class="control-header">
+              <h3>MediaPipe Hand Control</h3>
+              <p>Tracks one hand and interpolates servo targets from saved calibration values.</p>
+            </header>
+
+            <div class="control-toolbar">
+              <button id="control-start-btn" class="action-btn accent" type="button" disabled>Start Hand Control</button>
+              <button id="control-stop-btn" class="action-btn danger" type="button" disabled>Stop</button>
+              <label class="control-toggle">
+                <input id="control-camera-toggle" type="checkbox" checked>
+                <span>Show Camera Feed</span>
+              </label>
+            </div>
+
+            <p id="control-status-text" class="control-status-text">Idle</p>
+
+            <div class="control-main">
+              <div class="control-view">
+                <canvas id="control-canvas" width="1280" height="720" aria-label="Hand tracking preview"></canvas>
+                <video id="control-video" playsinline muted></video>
+              </div>
+
+              <aside class="control-readout">
+                <h4>Live Servo Angles</h4>
+                <p>Uses saved finger mapping and fully extended / fully closed values.</p>
+                <ul id="control-servo-readout" class="control-servo-readout"></ul>
+              </aside>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
